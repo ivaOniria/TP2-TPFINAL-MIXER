@@ -1,4 +1,4 @@
-import Servicio from '../servicio/samples.js'
+import Servicio from '../servicio/sounds.js'
 
 
 class Controlador {
@@ -8,45 +8,45 @@ class Controlador {
             this.#servicio = new Servicio()
     }
 
-    obtenerSamples = async (req, res) => {
+    obtenerSonidos = async (req, res) => {
         try {
             const { id } = req.params
-            const samples = await this.#servicio.obtenerSamples(id)
-            res.json(samples)
+            const sonidos = await this.#servicio.obtenerSonidos(id)
+            res.json(sonidos)
         } catch (error) {
             res.status(500).json({ error: error.message })
         }
     }
 
-    guardarSample = async (req, res) => {
+    guardarSonido = async (req, res) => {
         try {
-            const sample = req.body
-            // if (!Object.keys(sample).length) throw new Error('El sample está vacío')
+            const sonido = req.body
+            // if (!Object.keys(sonido).length) throw new Error('El sonido está vacío')
 
-            const sampleGuardado = await this.#servicio.guardarSample(sample)
-            res.json(sampleGuardado)
+            const sonidoGuardado = await this.#servicio.guardarSonido(sonido)
+            res.json(sonidoGuardado)
         }
         catch (error) {
             res.status(500).json({ error: error.message })
         }
     }
 
-    actualizarSample = async (req, res) => {
+    actualizarSonido = async (req, res) => {
         try {
             const { id } = req.params
-            const sample = req.body
-            const sampleActualizado = await this.#servicio.actualizarSample(id, sample)
-            res.status(sampleActualizado ? 200 : 404).json(sampleActualizado ? sampleActualizado : {})
+            const sonido = req.body
+            const sonidoActualizado = await this.#servicio.actualizarSonido(id, sonido)
+            res.status(sonidoActualizado ? 200 : 404).json(sonidoActualizado ? sonidoActualizado : {})
         } catch (error) {
             res.status(500).json({ error: error.message })
         }
     }
 
-    borrarSample = async (req, res) => {
+    borrarSonido = async (req, res) => {
         try {
             const { id } = req.params
-            const sampleEliminado = await this.#servicio.borrarSample(id)
-            res.status(sampleEliminado ? 200 : 404).json(sampleEliminado ? sampleEliminado : {})
+            const sonidoEliminado = await this.#servicio.borrarSonido(id)
+            res.status(sonidoEliminado ? 200 : 404).json(sonidoEliminado ? sonidoEliminado : {})
         } catch (error) {
             res.status(500).json({ error: error.message })
         }

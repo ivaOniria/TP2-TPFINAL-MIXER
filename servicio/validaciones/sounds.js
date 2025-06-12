@@ -1,7 +1,7 @@
 import Joi from 'joi'
 import { TIPOS_DE_SONIDO_ARRAY } from '../../src/constantes/tiposDeSonido.js'
 
-export const validar = (sample, method) => {
+export const validar = (sonido, method) => {
     const esPost = method === 'POST'
 
     const definiciones = {
@@ -26,7 +26,7 @@ export const validar = (sample, method) => {
     }
 
     const schema = Joi.object(definiciones).min(esPost ? 0 : 1)
-    const { error } = schema.validate(sample)
+    const { error } = schema.validate(sonido)
     return error ? { result: false, error } : { result: true }
 }
 

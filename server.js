@@ -1,5 +1,5 @@
 import express from 'express'
-import Routersamples from './router/samples.js'
+import RouterSonidos from './router/sounds.js'
 import RouterUsers from './router/users.js'
 
 class Server {
@@ -23,9 +23,9 @@ class Server {
         app.use(express.urlencoded({extended: true}))
 
         // -----------------------------------------------
-        //           API RESTful: samples
+        //           API RESTful: sonidos
         // -----------------------------------------------
-        app.use('/api/samples', new Routersamples().start())
+        app.use('/api/sonidos', new RouterSonidos().start())
         app.use('/api/users', new RouterUsers().start()) 
 
         // -----------------------------------------------

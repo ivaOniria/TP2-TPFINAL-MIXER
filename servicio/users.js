@@ -1,4 +1,4 @@
-import ModelMongoDB from '../model/DAO/samplesMongoDB.js'
+import ModelMongoDB from '../model/DAO/soundsMongoDB.js'
 import { validar } from './validaciones/users.js'
 
 
