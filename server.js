@@ -1,7 +1,7 @@
 import express from 'express'
 import RouterSonidos from './router/sounds.js'
 import RouterUsers from './router/users.js'
-
+import cors from 'cors'
 class Server {
     #port
 
@@ -18,15 +18,16 @@ class Server {
         // -----------------------------------------------
         //            MIDDLEWARES EXPRESS
         // -----------------------------------------------
+        app.use(cors())
         app.use(express.static('public'))
         app.use(express.json())
-        app.use(express.urlencoded({extended: true}))
+        app.use(express.urlencoded({ extended: true }))
 
         // -----------------------------------------------
         //           API RESTful: sonidos
         // -----------------------------------------------
         app.use('/api/sonidos', new RouterSonidos().start())
-        app.use('/api/users', new RouterUsers().start()) 
+        app.use('/api/users', new RouterUsers().start())
 
         // -----------------------------------------------
         //        LISTEN DEL SERVIDOR EXPRESS
