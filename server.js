@@ -2,6 +2,8 @@ import express from 'express'
 import RouterSonidos from './router/sounds.js'
 import RouterUsers from './router/users.js'
 import cors from 'cors'
+import dotenv from 'dotenv';
+
 class Server {
     #port
 
@@ -10,6 +12,8 @@ class Server {
     }
 
     start() {
+
+        dotenv.config()
         // -----------------------------------------------
         //             APLICACIÓN EXPRESS
         // -----------------------------------------------

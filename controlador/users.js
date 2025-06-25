@@ -24,10 +24,21 @@ class Controlador {
             res.json(usuarioLogueado)
         }
         catch (error) {
-            
-            res.status(500).json({ error: error.message })
+            res.status(401).json({ error: error.message , message: "pasa aca"})
         }
     }
+
+    register = async (req, res) => {
+        try {
+            const nuevoUsuario = req.body;
+            const usuarioCreado = await this.#servicio.register(nuevoUsuario);
+            res.status(201).json(usuarioCreado);
+        } catch (error) {
+            console.error("Error al registrar:", error.message);
+            res.status(500).json({ message: error.message });
+        }
+    };
+
 
     guardarUsuario = async (req, res) => {
         try {

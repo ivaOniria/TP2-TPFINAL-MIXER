@@ -16,11 +16,11 @@ export const validar = (usuario, method) => {
             'any.invalid': '"dni" no puede ser null ni vacío',
             'string.pattern.base': '"dni" debe contener solo números y tener entre 7 y 9 dígitos'
         }),
-        mail: Joi.string().email().invalid(null, '').messages({
+        email: Joi.string().email().invalid(null, '').messages({
             'any.invalid': '"mail" no puede ser null ni vacío',
             'string.email': '"mail" debe ser un email válido'
         }),
-        contrasenia: Joi.string().min(6).invalid(null, '').messages({
+        password: Joi.string().min(6).invalid(null, '').messages({
             'any.invalid': '"contraseña" no puede ser null ni vacía',
             'string.min': '"contraseña" debe tener al menos 6 caracteres'
         })

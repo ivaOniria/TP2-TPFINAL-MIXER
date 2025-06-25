@@ -32,9 +32,32 @@ class Servicio {
     }
 
     login = async (usuario) => {
-        const usuarioLogueado = await this.#model.login(usuario)
-        return usuarioLogueado
-    }
+        return await this.#model.login(usuario);
+    };
+
+    register = async (usuario) => {
+        //VALIDACION - ARREGLAR JOI
+          /*const { result, error } = validar(usuario, 'POST');
+            if (error) {
+                throw new Error(`Datos inválidos: ${error.details[0].message}`);
+            }*/
+
+            /* VERIFICAR SI EXISE ACA? A REVISAR..
+        const existente = await usersModel.findOne({ email: usuario.email });
+            if (existente) {
+                throw new Error('El email ya está registrado');
+            }*/
+
+            // ALTERNATIVA
+            const existente = await this.#model.buscarPorEmail(usuario.email);
+                if (existente) {
+                throw new Error('El email ya está registrado');
+            }
+
+            const usuarioCreado = await this.#model.register(usuario);
+            return usuarioCreado;
+        }
+
 
     actualizarUsuario = async (id,Usuario) => {
         const usuarioActualizado = await this.#model.actualizarUsuario(id,Usuario)
