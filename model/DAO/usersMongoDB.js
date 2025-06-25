@@ -1,25 +1,25 @@
 import CnxMongoDB from "../DBMongo.js"
-import { userModel } from "./models/user.js"
+import usersModel from "./models/user.js"
 
-class ModelMongoDB {
+class usersMongoDB {
     constructor() {}
 
     obtenerUsers = async () => {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
-        const users = await userModel.find()
+        const users = await usersModel.find()
         return users
     }
 
     obtenerUser = async id => {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
-        const user = await userModel.findOne({_id:id})
+        const user = await usersModel.findOne({_id:id})
         return user
     }
 
     guardarUser = async user => {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
         
-        const userModel = new userModel(user)
+        const userModel = new usersModel(user)
         const userGuardado = await userModel.save()
         return userGuardado
     }
@@ -27,7 +27,7 @@ class ModelMongoDB {
     actualizarUser = async (id, user) => {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
 
-        await userModel.updateOne({_id:id}, {$set: user})
+        await usersModel.updateOne({_id:id}, {$set: user})
         const userActualizado = await this.obtenerUser(id)
         return userActualizado
     }
@@ -36,9 +36,14 @@ class ModelMongoDB {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
 
         const userBorrado = await this.obtenerUser(id)
-        await userModel.deleteOne({_id: id})
+        await usersModel.deleteOne({_id: id})
         return userBorrado
     }
-}
 
-export default ModelMongoDB
+    login = async (usuario) => {
+        if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
+        const usuarioLogueado = await usersModel.findOne({email: usuario.email, password: usuario.password})
+        return usuarioLogueado
+    }
+}
+export default usersMongoDB

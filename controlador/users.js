@@ -17,6 +17,18 @@ class Controlador {
         }
     }
 
+    login = async (req, res) => {
+        try {
+            const usuario = req.body
+            const usuarioLogueado = await this.#servicio.login(usuario)
+            res.json(usuarioLogueado)
+        }
+        catch (error) {
+            
+            res.status(500).json({ error: error.message })
+        }
+    }
+
     guardarUsuario = async (req, res) => {
         try {
             const usuario = req.body

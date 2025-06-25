@@ -6,4 +6,6 @@ const userSchema = mongoose.Schema({ // MODIFICAR PARA USER
     password: String,  
 },{versionKey: false})
 
-export const UserModel = mongoose.model('users', userSchema)
+const usersModel = mongoose.model('users', userSchema)
+
+export default usersModel

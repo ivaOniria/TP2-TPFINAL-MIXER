@@ -1,4 +1,4 @@
-import ModelMongoDB from '../model/DAO/soundsMongoDB.js'
+import usersMongoDB from '../model/DAO/usersMongoDB.js'
 import { validar } from './validaciones/users.js'
 
 
@@ -6,7 +6,7 @@ class Servicio {
     #model
 
     constructor() {
-        this.#model = new ModelMongoDB()
+        this.#model = new usersMongoDB()
     }
 
     obtenerUsuarios = async id => {
@@ -29,6 +29,11 @@ class Servicio {
         else {
             throw new Error(res.error.details[0].message)
         }
+    }
+
+    login = async (usuario) => {
+        const usuarioLogueado = await this.#model.login(usuario)
+        return usuarioLogueado
     }
 
     actualizarUsuario = async (id,Usuario) => {

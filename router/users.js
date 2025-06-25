@@ -11,7 +11,7 @@ class Router {
 
     start() {    
         const router = express.Router()
-
+        router.post('/login', this.#controlador.login)
         router.get('/:id?', this.#controlador.obtenerUsuarios)
         router.post('/', this.#controlador.guardarUsuario)
         router.put('/:id', this.#controlador.actualizarUsuario)
