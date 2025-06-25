@@ -5,7 +5,11 @@ const sonidoSchema = mongoose.Schema({ // MODIFICAR PARA SONIDO
     url: String,
     tipo: String,
     tamanio: Number,
-    duracion : Number //en segundos           
+    duracion : Number, //en segundos        
+    usuario: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'usuarios'
+    }
 
 },{versionKey: false})
 
