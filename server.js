@@ -2,7 +2,6 @@ import express from 'express'
 import RouterSonidos from './router/sounds.js'
 import RouterUsers from './router/users.js'
 import cors from 'cors'
-import dotenv from 'dotenv';
 
 class Server {
     #port
@@ -29,7 +28,7 @@ class Server {
         // -----------------------------------------------
         //           API RESTful: sonidos
         // -----------------------------------------------
-        app.use('/api/sonidos', new RouterSonidos().start())
+        app.use('/api/sounds', new RouterSonidos().start())
         app.use('/api/users', new RouterUsers().start())
 
         // -----------------------------------------------

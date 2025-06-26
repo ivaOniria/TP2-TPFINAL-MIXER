@@ -20,14 +20,15 @@ class Servicio {
     }
 
     guardarSonido = async sonido => {
-        const res = validar(sonido)
-        if(res.result) {
+        //const res = validar(sonido)
+        //if(res.result) {
+            
             const sonidoGuardado = await this.#model.guardarSonido(sonido)
             return sonidoGuardado
-        }
-        else {
+        //}
+/*         else {
             throw new Error(res.error.details[0].message)
-        }
+        } */
     }
 
     actualizarSonido = async (id,sonido) => {

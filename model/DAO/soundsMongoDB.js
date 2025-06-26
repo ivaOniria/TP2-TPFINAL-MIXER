@@ -1,33 +1,32 @@
 import CnxMongoDB from "../DBMongo.js"
-import { sonidoModel } from "./models/sound.js"
-
+import { soundsModel } from "./models/sound.js"
 class ModelMongoDB {
     constructor() {}
 
     obtenerSonidos = async () => {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
-        const sonidos = await sonidoModel.find()
+        const sonidos = await soundsModel.find()
         return sonidos
     }
 
     obtenerSonido = async id => {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
-        const sonido = await sonidoModel.findOne({_id:id})
+        const sonido = await soundsModel.findOne({_id:id})
         return sonido
     }
 
     guardarSonido = async sonido => {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
         
-        const sonidoModel = new sonidoModel(sonido)
-        const sonidoGuardado = await sonidoModel.save()
+        const nuevoSonido = new soundsModel(sonido)
+        const sonidoGuardado = await nuevoSonido.save()
         return sonidoGuardado
     }
 
     actualizarSonido = async (id, sonido) => {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
 
-        await sonidoModel.updateOne({_id:id}, {$set: sonido})
+        await soundsModel.updateOne({_id:id}, {$set: sonido})
         const sonidoActualizado = await this.obtenerSonido(id)
         return sonidoActualizado
     }
@@ -36,7 +35,7 @@ class ModelMongoDB {
         if(!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
 
         const sonidoBorrado = await this.obtenerSonido(id)
-        await sonidoModel.deleteOne({_id: id})
+        await soundsModel.deleteOne({_id: id})
         return sonidoBorrado
     }
 }

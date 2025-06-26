@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema({ // MODIFICAR PARA USER
+// User debería tener la referencia a todos sus sonidos.
+const userSchema = mongoose.Schema({ 
     nombre: String,
     email: String,
     password: String,  

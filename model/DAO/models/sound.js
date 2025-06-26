@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
 
-const sonidoSchema = mongoose.Schema({ // MODIFICAR PARA SONIDO
-    nombre: String,
+const soundSchema = mongoose.Schema({ 
+    title: String,
     url: String,
-    tipo: String,
-    tamanio: Number,
-    duracion : Number, //en segundos        
-    usuario: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'usuarios'
+    type: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users", 
+      required: true,
     }
 
 },{versionKey: false})
 
-export const sonidoModel = mongoose.model('sonidos', sonidoSchema)
+
+
+export const soundsModel = mongoose.model('sounds', soundSchema)
