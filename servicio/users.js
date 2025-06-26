@@ -1,16 +1,20 @@
 import usersMongoDB from '../model/DAO/usersMongoDB.js'
 import { validar } from './validaciones/users.js'
-
+import { sendEmail } from '../utils/nodemailer.js';
+import jwtToken from '../utils/jwtToken.js';
 
 class Servicio {
     #model
+    #jwtService
 
     constructor() {
         this.#model = new usersMongoDB()
+        this.#jwtService = new jwtToken()
+
     }
 
     obtenerUsuarios = async id => {
-        if(id) {
+        if (id) {
             const usuario = await this.#model.obtenerUsuario(id)
             return usuario
         }
@@ -20,9 +24,9 @@ class Servicio {
         }
     }
 
-    guardarUsuario = async Usuario => {
-        const res = validar(Usuario)
-        if(res.result) {
+    guardarUsuario = async usuario => {
+        const res = validar(usuario)
+        if (res.result) {
             const usuarioGuardado = await this.#model.guardarUsuario(Usuario)
             return usuarioGuardado
         }
@@ -32,35 +36,28 @@ class Servicio {
     }
 
     login = async (usuario) => {
-        return await this.#model.login(usuario);
-    };
+        //const res = validar(usuario, 'login')
+       // if (res.result) {
+            return await this.#jwtService.login(usuario);
+       // }
+    }
 
     register = async (usuario) => {
-        //VALIDACION - ARREGLAR JOI
-          /*const { result, error } = validar(usuario, 'POST');
-            if (error) {
-                throw new Error(`Datos inválidos: ${error.details[0].message}`);
-            }*/
-
-            /* VERIFICAR SI EXISE ACA? A REVISAR..
-        const existente = await usersModel.findOne({ email: usuario.email });
-            if (existente) {
-                throw new Error('El email ya está registrado');
-            }*/
-
-            // ALTERNATIVA
-            const existente = await this.#model.buscarPorEmail(usuario.email);
-                if (existente) {
-                throw new Error('El email ya está registrado');
-            }
-
-            const usuarioCreado = await this.#model.register(usuario);
-            return usuarioCreado;
+        const existente = await this.#model.buscarPorEmail(usuario.email);
+        if (existente) {
+            throw new Error('El email ya está registrado');
         }
 
+        //const res = validar(usuario, 'register');
+        //if (res.result) {
+            const usuarioCreado = await this.#jwtService.register(usuario);
+            await sendEmail(usuario.email);
+            return usuarioCreado;
+        //}
+    }
 
-    actualizarUsuario = async (id,Usuario) => {
-        const usuarioActualizado = await this.#model.actualizarUsuario(id,Usuario)
+    actualizarUsuario = async (id, Usuario) => {
+        const usuarioActualizado = await this.#model.actualizarUsuario(id, Usuario)
         return usuarioActualizado
     }
 
@@ -71,12 +68,12 @@ class Servicio {
 
     obtenerEstadisticas = async opcion => {
         const usuarios = await this.#model.obtenerUsuarios()
-        switch(opcion) {
+        switch (opcion) {
             case 'cantidad':
                 return { cantidad: usuarios.length }
 
             case 'avg-precio':
-                return { 'precio promedio': +(usuarios.reduce((acc,p) => acc + p.precio, 0) / usuarios.length).toFixed(2) }
+                return { 'precio promedio': +(usuarios.reduce((acc, p) => acc + p.precio, 0) / usuarios.length).toFixed(2) }
 
             case 'min-precio':
                 return { 'precio mínimo': +Math.min(...usuarios.map(p => p.precio)).toFixed(2) }

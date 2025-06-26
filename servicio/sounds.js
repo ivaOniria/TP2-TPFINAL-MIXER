@@ -1,7 +1,6 @@
 import { validar } from './validaciones/sounds.js'
 import ModelMongoDB from '../model/DAO/soundsMongoDB.js'
 
-
 class Servicio {
     #model
 
