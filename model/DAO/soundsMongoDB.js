@@ -3,6 +3,22 @@ import { soundsModel } from "./models/sound.js"
 class soundsMongoDB {
     constructor() { }
 
+    obtenerSonidos = async (userId = null) => {
+        if (!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
+        
+        if (userId) {
+            // Si se especifica un userId, obtener sonidos de ese usuario
+            return await soundsModel
+                .find({ user: userId })
+                .populate('user', 'nombre');
+        } else {
+            // Si no se especifica userId, obtener todos los sonidos
+            return await soundsModel
+                .find()
+                .populate('user', 'nombre');
+        }
+    };
+
     obtenerSonido = async id => {
         if (!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
         return await soundsModel

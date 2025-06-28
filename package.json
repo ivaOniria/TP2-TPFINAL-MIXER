@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "nodemon app.js --ignore /*.json"
+    "dev": "nodemon app.js --ignore /*.json",
+    "populate": "node scripts/populateDB.js"
   },
   "engines": {
     "node": ">=16"
@@ -26,5 +27,8 @@
     "mongodb": "^6.17.0",
     "mongoose": "^8.15.1",
     "nodemailer": "^7.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

@@ -1,2 +1,13 @@
 node_modules
 .env
+
+# MongoDB data directory
+mongodb-data/
+
+# MongoDB files (por si se crean accidentalmente)
+*.wt
+*.lock
+WiredTiger*
+storage.bson
+journal/
+diagnostic.data/

@@ -1,6 +1,7 @@
 import { validar } from './validaciones/sounds.js'
 import soundsMongoDB from '../model/DAO/soundsMongoDB.js'
 import usersMongoDB from '../model/DAO/models/user.js'
+import { id as idUserGeneral } from "../src/constantes/userGeneral.js";
 class Servicio {
     #model
 
@@ -9,31 +10,42 @@ class Servicio {
     }
 
     obtenerSonidos = async (id, userId) => {
+        const sonidosADevolver = [];
+
         if (id) {
             const s = await this.#model.obtenerSonido(id);
-            return {
+            sonidosADevolver.push({
                 id: s._id.toString(),
                 name: s.title,
                 file: s.url,
                 category: s.type,
                 userName: s.user?.nombre || 'Desconocido'
-            };
+            });
         }
 
         if (userId) {
             const sonidos = await this.#model.obtenerSonidosPorUsuario(userId);
-
-            return sonidos.map(s => ({
+            sonidosADevolver.push(...sonidos.map(s => ({
                 id: s._id.toString(),
                 name: s.title,
                 file: s.url,
                 category: s.type,
                 userName: s.user?.nombre || 'Desconocido'
-            }));
+            })));
         }
-        /*      const sonidos = await this.#model.obtenerSonidos();
-                return sonidos; */
-        return [];
+        if (userId !== idUserGeneral) {
+
+        const sonidosBase = await this.#model.obtenerSonidos(idUserGeneral);
+        sonidosADevolver.push(...sonidosBase.map(s => ({
+            id: s._id.toString(),
+            name: s.title,
+            file: s.url,
+            category: s.type,
+                userName: s.user?.nombre || 'General'
+            })));
+        }
+
+        return sonidosADevolver;
     };
 
     guardarSonido = async sonido => {
