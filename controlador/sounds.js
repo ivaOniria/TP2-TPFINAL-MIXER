@@ -5,14 +5,16 @@ class Controlador {
     #servicio
 
     constructor() {
-            this.#servicio = new Servicio()
+        this.#servicio = new Servicio()
     }
 
     obtenerSonidos = async (req, res) => {
         try {
             const { id } = req.params
-            const sonidos = await this.#servicio.obtenerSonidos(id)
-            res.json(sonidos)
+            const { userId } = req.query;
+
+            const sonidos = await this.#servicio.obtenerSonidos(id, userId)
+            res.json(sonidos) 
         } catch (error) {
             res.status(500).json({ error: error.message })
         }

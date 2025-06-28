@@ -9,6 +9,7 @@ class usersMongoDB {
         const users = await usersModel.find()
         return users
     }
+    
     obtenerUserPorMail = async (usuario) => {
         if (!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
         const user = await usersModel.findOne({ email: usuario.email })

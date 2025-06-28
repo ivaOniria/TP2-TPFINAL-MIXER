@@ -2,6 +2,7 @@ import usersMongoDB from '../model/DAO/usersMongoDB.js'
 import { validar } from './validaciones/users.js'
 import { sendEmail } from '../utils/nodemailer.js';
 import jwtToken from '../utils/jwtToken.js';
+import soundsMongoDB from '../model/DAO/soundsMongoDB.js'
 
 class Servicio {
     #model
@@ -13,73 +14,80 @@ class Servicio {
 
     }
 
-    obtenerUsuarios = async id => {
+    obtenerUsers = async id => {
         if (id) {
-            const usuario = await this.#model.obtenerUsuario(id)
-            return usuario
+            const user = await this.#model.obtenerUser(id)
+            return user
         }
         else {
-            const usuarios = await this.#model.obtenerUsuarios()
-            return usuarios
+            const users = await this.#model.obtenerUsers()
+            return users
         }
     }
 
-    guardarUsuario = async usuario => {
-        const res = validar(usuario)
+    guardarUser = async user => {
+        const res = validar(user)
         if (res.result) {
-            const usuarioGuardado = await this.#model.guardarUsuario(Usuario)
-            return usuarioGuardado
+            const userGuardado = await this.#model.guardarUser(user)
+            return userGuardado
         }
         else {
             throw new Error(res.error.details[0].message)
         }
     }
 
-    login = async (usuario) => {
-        //const res = validar(usuario, 'login')
-       // if (res.result) {
-            return await this.#jwtService.login(usuario);
-       // }
+    login = async (user) => {
+        //const res = validar(user, 'login')
+        // if (res.result) {
+        return await this.#jwtService.login(user);
+        // }
     }
 
-    register = async (usuario) => {
-        const existente = await this.#model.buscarPorEmail(usuario.email);
+    register = async (user) => {
+        const existente = await this.#model.buscarPorEmail(user.email);
         if (existente) {
             throw new Error('El email ya está registrado');
         }
 
-        //const res = validar(usuario, 'register');
+        //const res = validar(user, 'register');
         //if (res.result) {
-            const usuarioCreado = await this.#jwtService.register(usuario);
-            await sendEmail(usuario.email);
-            return usuarioCreado;
+        const userCreado = await this.#jwtService.register(user);
+        await sendEmail(user.email);
+        return userCreado;
         //}
     }
 
-    actualizarUsuario = async (id, Usuario) => {
-        const usuarioActualizado = await this.#model.actualizarUsuario(id, Usuario)
-        return usuarioActualizado
+    actualizarUser = async (id, user) => {
+        const userActualizado = await this.#model.actualizarUser(id, user)
+        return userActualizado
     }
 
-    borrarUsuario = async id => {
-        const usuarioEliminado = await this.#model.borrarUsuario(id)
-        return usuarioEliminado
+    borrarUser = async id => {
+        const userEliminado = await this.#model.borrarUser(id)
+
+        // Chequear que funciona
+        await soundsMongoDB.updateMany(
+            { user: userEliminado._id },
+            { $unset: { user: "" } } // O deleateMany()
+        );
+
+        return userEliminado
     }
 
     obtenerEstadisticas = async opcion => {
-        const usuarios = await this.#model.obtenerUsuarios()
+        const users = await this.#model.obtenerUsers()
         switch (opcion) {
             case 'cantidad':
-                return { cantidad: usuarios.length }
+                return { cantidad: users.length }
 
             case 'avg-precio':
-                return { 'precio promedio': +(usuarios.reduce((acc, p) => acc + p.precio, 0) / usuarios.length).toFixed(2) }
+                return { 'precio promedio': +(users.reduce((acc, p) => acc + p.precio, 0) / users.length).toFixed(2) }
 
             case 'min-precio':
-                return { 'precio mínimo': +Math.min(...usuarios.map(p => p.precio)).toFixed(2) }
+                return { 'precio mínimo': +Math.min(...users.map(p => p.precio)).toFixed(2) }
 
             case 'max-precio':
-                return { 'precio máximo': +Math.max(...usuarios.map(p => p.precio)).toFixed(2) }
+                return { 'precio máximo': +Math.max(...users.map(p => p.precio)).toFixed(2) }
 
             default:
                 return { error: `opción estadistica '${opcion}' no soportada` }

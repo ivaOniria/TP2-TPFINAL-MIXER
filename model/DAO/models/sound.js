@@ -12,6 +12,4 @@ const soundSchema = mongoose.Schema({
 
 },{versionKey: false})
 
-
-
 export const soundsModel = mongoose.model('sounds', soundSchema)

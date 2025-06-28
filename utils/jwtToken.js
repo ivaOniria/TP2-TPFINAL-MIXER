@@ -7,7 +7,7 @@ class jwtToken {
 
     #model
 
-     constructor() {
+    constructor() {
         this.#model = new usersMongoDB()
 
     }
@@ -52,23 +52,25 @@ class jwtToken {
             email: usuario.email,
             password: hashedPassword,
         };
-        
-        await this.#model.register(nuevoUsuario)
 
-        const token = jwt.sign({ id: nuevoUsuario._id, email: nuevoUsuario.email },
+        const usuarioGuardado = await this.#model.register(nuevoUsuario);
+
+        const token = jwt.sign(
+            { id: usuarioGuardado._id, email: usuarioGuardado.email },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' });
+            { expiresIn: '1h' }
+        );
 
         return {
             access_token: token,
             expires_in: 3600,
             user: {
-                _id: nuevoUsuario._id,
-                nombre: nuevoUsuario.nombre,
-                email: nuevoUsuario.email,
-            }
+                _id: usuarioGuardado._id,
+                nombre: usuarioGuardado.nombre,
+                email: usuarioGuardado.email,
+            },
         };
-    }
+    };
 
 }
 
