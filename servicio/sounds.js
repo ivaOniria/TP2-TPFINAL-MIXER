@@ -1,27 +1,29 @@
 import { validar } from './validaciones/sounds.js'
 import soundsMongoDB from '../model/DAO/soundsMongoDB.js'
-import usersMongoDB from '../model/DAO/models/user.js'
+import usersMongoDB from '../model/DAO/usersMongoDB.js'
 import { id as idUserGeneral } from "../src/constantes/userGeneral.js";
 class Servicio {
     #model
+    #modelUsers
 
     constructor() {
         this.#model = new soundsMongoDB()
+        this.#modelUsers = new usersMongoDB()
     }
 
-    obtenerSonidos = async (id, userId) => {
-        const sonidosADevolver = [];
-
+    obtenerSonidos = async id => {
         if (id) {
-            const s = await this.#model.obtenerSonido(id);
-            sonidosADevolver.push({
-                id: s._id.toString(),
-                name: s.title,
-                file: s.url,
-                category: s.type,
-                userName: s.user?.nombre || 'Desconocido'
-            });
+            const user = await this.#model.obtenerSonido(id)
+            return user
         }
+        else {
+            const users = await this.#model.obtenerSonidos()
+            return users
+        }
+    }
+
+    cargarSonidos = async (userId) => {
+        const sonidosADevolver = [];
 
         if (userId) {
             const sonidos = await this.#model.obtenerSonidosPorUsuario(userId);
@@ -30,21 +32,23 @@ class Servicio {
                 name: s.title,
                 file: s.url,
                 category: s.type,
-                userName: s.user?.nombre || 'Desconocido'
+                userName: s.user?.nombre || 'Desconocido',
+                userId: s.user._id
             })));
         }
+        
         if (userId !== idUserGeneral) {
 
-        const sonidosBase = await this.#model.obtenerSonidos(idUserGeneral);
-        sonidosADevolver.push(...sonidosBase.map(s => ({
-            id: s._id.toString(),
-            name: s.title,
-            file: s.url,
-            category: s.type,
-                userName: s.user?.nombre || 'General'
+            const sonidosBase = await this.#model.obtenerSonidos(idUserGeneral);
+            sonidosADevolver.push(...sonidosBase.map(s => ({
+                id: s._id.toString(),
+                name: s.title,
+                file: s.url,
+                category: s.type,
+                userName: s.user?.nombre || 'General',
+                userId: s.user._id
             })));
         }
-
         return sonidosADevolver;
     };
 
@@ -52,15 +56,11 @@ class Servicio {
         /*         const res = validar(sonido)
                 if (res.result) { */
         const sonidoGuardado = await this.#model.guardarSonido(sonido)
-
-        if (!sonido.user || !sonido.user._id) {
+        if (!sonidoGuardado.user) {
             throw new Error('El sonido no tiene un usuario válido');
         }
 
-        await usersMongoDB.findByIdAndUpdate(sonido.user._id, {
-            $push: { sounds: sonidoGuardado._id }
-        });
-
+        await this.#modelUsers.guardarSonidoEnUsuario(sonidoGuardado)
         return sonidoGuardado
         /*         }
                 else {
@@ -75,34 +75,8 @@ class Servicio {
 
     borrarSonido = async id => {
         const sonidoEliminado = await this.#model.borrarSonido(id)
-
-        // Chequear que funciona
-        await usersMongoDB.updateMany(
-            { sounds: sonidoEliminado._id },
-            { $pull: { sounds: sonidoEliminado._id } }
-        );
-
+        await this.#modelUsers.borrarSonidoDeUsuario(sonidoEliminado._id, sonidoEliminado.user._id);
         return sonidoEliminado
-    }
-
-    obtenerEstadisticas = async opcion => {
-        const sonidos = await this.#model.obtenerSonidos()
-        switch (opcion) {
-            case 'cantidad':
-                return { cantidad: sonidos.length }
-
-            case 'avg-precio':
-                return { 'precio promedio': +(sonidos.reduce((acc, p) => acc + p.precio, 0) / sonidos.length).toFixed(2) }
-
-            case 'min-precio':
-                return { 'precio mínimo': +Math.min(...sonidos.map(p => p.precio)).toFixed(2) }
-
-            case 'max-precio':
-                return { 'precio máximo': +Math.max(...sonidos.map(p => p.precio)).toFixed(2) }
-
-            default:
-                return { error: `opción estadistica '${opcion}' no soportada` }
-        }
     }
 }
 

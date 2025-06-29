@@ -7,10 +7,12 @@ import soundsMongoDB from '../model/DAO/soundsMongoDB.js'
 class Servicio {
     #model
     #jwtService
-
+    #modelSounds
+    
     constructor() {
         this.#model = new usersMongoDB()
         this.#jwtService = new jwtToken()
+        this.#modelSounds = new soundsMongoDB()
 
     }
 
@@ -64,35 +66,9 @@ class Servicio {
 
     borrarUser = async id => {
         const userEliminado = await this.#model.borrarUser(id)
-
-        // Chequear que funciona
-        await soundsMongoDB.updateMany(
-            { user: userEliminado._id },
-            { $unset: { user: "" } } // O deleateMany()
-        );
-
+        await this.#modelSounds.borrarSonidosDelUsuario(userEliminado._id);
         return userEliminado
-    }
-
-    obtenerEstadisticas = async opcion => {
-        const users = await this.#model.obtenerUsers()
-        switch (opcion) {
-            case 'cantidad':
-                return { cantidad: users.length }
-
-            case 'avg-precio':
-                return { 'precio promedio': +(users.reduce((acc, p) => acc + p.precio, 0) / users.length).toFixed(2) }
-
-            case 'min-precio':
-                return { 'precio mínimo': +Math.min(...users.map(p => p.precio)).toFixed(2) }
-
-            case 'max-precio':
-                return { 'precio máximo': +Math.max(...users.map(p => p.precio)).toFixed(2) }
-
-            default:
-                return { error: `opción estadistica '${opcion}' no soportada` }
-        }
-    }
+    }    
 }
 
 export default Servicio

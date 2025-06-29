@@ -13,7 +13,18 @@ class Controlador {
             const { id } = req.params
             const { userId } = req.query;
 
-            const sonidos = await this.#servicio.obtenerSonidos(id, userId)
+            const sonidos = await this.#servicio.obtenerSonidos(id)
+            res.json(sonidos) 
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
+    }
+    
+    cargarSonidos = async (req, res) => {
+        try {
+            const { id } = req.params
+            const { userId } = req.query;
+            const sonidos = await this.#servicio.cargarSonidos(id, userId)
             res.json(sonidos) 
         } catch (error) {
             res.status(500).json({ error: error.message })
@@ -25,7 +36,7 @@ class Controlador {
             const sonido = req.body
             // if (!Object.keys(sonido).length) throw new Error('El sonido está vacío')
 
-            const sonidoGuardado = await this.#servicio.guardarSonido(sonido)
+            const sonidoGuardado = await this.#servicio.guardarSonido(sonido)           
             res.json(sonidoGuardado)
         }
         catch (error) {
@@ -49,16 +60,6 @@ class Controlador {
             const { id } = req.params
             const sonidoEliminado = await this.#servicio.borrarSonido(id)
             res.status(sonidoEliminado ? 200 : 404).json(sonidoEliminado ? sonidoEliminado : {})
-        } catch (error) {
-            res.status(500).json({ error: error.message })
-        }
-    }
-
-    obtenerEstadisticas = async (req, res) => {
-        try {
-            const { opcion } = req.params
-            const estadisticas = await this.#servicio.obtenerEstadisticas(opcion)
-            res.json({ estadisticas })
         } catch (error) {
             res.status(500).json({ error: error.message })
         }

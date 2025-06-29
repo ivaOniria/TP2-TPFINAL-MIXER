@@ -3,14 +3,15 @@ import { soundsModel } from "./models/sound.js"
 class soundsMongoDB {
     constructor() { }
 
-    obtenerSonidos = async (userId = null) => {
+    obtenerSonidos = async (userId) => {
         if (!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
-        
+
         if (userId) {
             // Si se especifica un userId, obtener sonidos de ese usuario
             return await soundsModel
                 .find({ user: userId })
                 .populate('user', 'nombre');
+
         } else {
             // Si no se especifica userId, obtener todos los sonidos
             return await soundsModel
@@ -27,11 +28,12 @@ class soundsMongoDB {
     };
 
     obtenerSonidosPorUsuario = async userId => {
-        if (!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
+        if (!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS');
         return await soundsModel
             .find({ user: userId })
-            .populate('user', 'nombre');
-    };
+            .populate('user', 'nombre')
+            .sort({ _id: -1 })
+    }
 
     guardarSonido = async sonido => {
         if (!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
@@ -55,6 +57,17 @@ class soundsMongoDB {
         const sonidoBorrado = await this.obtenerSonido(id)
         await soundsModel.deleteOne({ _id: id })
         return sonidoBorrado
+    }
+
+    async borrarSonidosDelUsuario(userId) {
+        try {
+            const resultado = await soundsModel.deleteMany({ user: userId });
+            console.log(`Sonidos borrados del usuario ${userId}:`, resultado.deletedCount);
+            return resultado;
+        } catch (error) {
+            console.error(`Error al borrar sonidos del usuario ${userId}:`, error);
+            throw error;
+        }
     }
 }
 

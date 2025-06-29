@@ -10,7 +10,7 @@ class Controlador {
     obtenerUser = async (req, res) => {
         try {
             const { id } = req.params
-            const usuarios = await this.#servicio.obtenerUser(id)
+            const usuarios = await this.#servicio.obtenerUsers(id)
             res.json(usuarios)
         } catch (error) {
             res.status(500).json({ error: error.message })
@@ -38,7 +38,6 @@ class Controlador {
             res.status(500).json({ message: error.message });
         }
     };
-
 
     guardarUser = async (req, res) => {
         try {
@@ -74,15 +73,6 @@ class Controlador {
         }
     }
 
-    obtenerEstadisticas = async (req, res) => {
-        try {
-            const { opcion } = req.params
-            const estadisticas = await this.#servicio.obtenerEstadisticas(opcion)
-            res.json({ estadisticas })
-        } catch (error) {
-            res.status(500).json({ error: error.message })
-        }
-    }
 }
 
 export default Controlador

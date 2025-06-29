@@ -17,9 +17,7 @@ class Router {
         router.post('/', this.#controlador.guardarUser)
         router.put('/:id', this.#controlador.actualizarUser)
         router.delete('/:id', this.#controlador.borrarUser)
-
-        router.get('/estadisticas/:opcion', this.#controlador.obtenerEstadisticas)
-
+        
         return router
     }
 }

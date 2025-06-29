@@ -9,7 +9,7 @@ class usersMongoDB {
         const users = await usersModel.find()
         return users
     }
-    
+
     obtenerUserPorMail = async (usuario) => {
         if (!CnxMongoDB.connectionOK) throw new Error('ERROR CNX BASE DE DATOS')
         const user = await usersModel.findOne({ email: usuario.email })
@@ -51,5 +51,19 @@ class usersMongoDB {
         return await usersModel.findOne({ email });
     };
 
+    borrarSonidoDeUsuario = async (idSound, idUser) => {
+        const resultado = await usersModel.updateOne(
+            { _id: idUser },
+            { $pull: { sounds: idSound } }
+        )
+        return resultado
+    }
+
+    guardarSonidoEnUsuario = async sonido => {
+        await usersModel.findByIdAndUpdate(sonido.user._id, {
+            $push: { sounds: sonido._id }
+        });
+        return sonido
+    }
 }
 export default usersMongoDB

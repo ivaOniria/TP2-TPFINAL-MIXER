@@ -9,15 +9,14 @@ class Router {
         this.#controlador = new Controlador()
     }
 
-    start() {    
+    start() {
         const router = express.Router()
 
+        router.get('/loadSounds/:id', this.#controlador.cargarSonidos)
         router.get('/:id?', this.#controlador.obtenerSonidos)
         router.post('/', this.#controlador.guardarSonido)
         router.put('/:id', this.#controlador.actualizarSonido)
         router.delete('/:id', this.#controlador.borrarSonido)
-
-        router.get('/estadisticas/:opcion', this.#controlador.obtenerEstadisticas)
 
         return router
     }
