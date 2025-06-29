@@ -11,3 +11,10 @@ WiredTiger*
 storage.bson
 journal/
 diagnostic.data/
+
+# FFmpeg renderizado - carpetas temporales y archivos de salida
+temp_audio/
+rendered_audio/
+*.mp3
+*.wav
+*.flac
