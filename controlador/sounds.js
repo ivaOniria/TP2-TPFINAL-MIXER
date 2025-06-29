@@ -64,6 +64,33 @@ class Controlador {
             res.status(500).json({ error: error.message })
         }
     }
+
+    renderizarSonidos = async (req, res) => {
+        try {
+            const sonidos = req.body
+            const sonidosRenderizados = await this.#servicio.renderizarSonidos(sonidos)
+            res.json(sonidosRenderizados)
+        } catch (error) {
+            res.status(500).json({ error: error.message })
+        }
+    }
+
+    descargarArchivo = async (req, res) => {
+        try {
+            const { filename } = req.params
+            const filePath = await this.#servicio.obtenerRutaArchivo(filename)
+            
+            // Configurar headers para descarga
+            res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+            res.setHeader('Content-Type', 'audio/mpeg')
+            
+            // Enviar archivo
+            res.sendFile(filePath)
+        } catch (error) {
+            console.error('Error descargando archivo:', error)
+            res.status(404).json({ error: 'Archivo no encontrado' })
+        }
+    }
 }
 
 export default Controlador
