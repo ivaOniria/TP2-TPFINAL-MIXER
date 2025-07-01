@@ -7,9 +7,9 @@ export const validar = (usuario, metodo) => {
             .min(1)
             .invalid(null, '')
             .messages({
-                'any.invalid': '"nombre" no puede ser null ni vacío',
-                'string.base': '"nombre" debe ser una cadena de texto',
-                'string.empty': '"nombre" no puede estar vacío'
+                'any.invalid': 'El campo "nombre" no puede ser null',
+                'string.base': 'El campo "nombre" debe ser una cadena de texto',
+                'string.empty': 'El campo "nombre" no puede estar vacío'
             }),
 
         email: Joi.string()
@@ -17,18 +17,19 @@ export const validar = (usuario, metodo) => {
             .pattern(/.+@.+/)
             .required()
             .messages({
-                'string.base': '"email" debe ser un texto',
-                'string.empty': '"email" no puede estar vacío',
-                'string.pattern.base': '"email" debe contener un @',
-                'any.required': '"email" es obligatorio',
+                'string.base': 'El campo "email" debe ser un texto',
+                'string.empty': 'El campo "email" no puede estar vacío',
+                'string.pattern.base': 'El campo "email" debe contener un @',
+                'any.required': 'El campo "email" es obligatorio',
             }),
 
         password: Joi.string()
             .min(6)
             .invalid(null, '')
             .messages({
-                'any.invalid': '"contraseña" no puede ser null ni vacía',
-                'string.min': '"contraseña" debe tener al menos 6 caracteres'
+                'any.invalid': 'El campo "contraseña" no puede ser null',
+                'string.empty': 'El campo "contraseña" no puede estar vacío',
+                'string.min': 'El campo "contraseña" debe tener al menos 6 caracteres'
             })
     };
 

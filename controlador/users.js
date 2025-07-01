@@ -24,7 +24,8 @@ class Controlador {
             res.json(usuarioLogueado)
         }
         catch (error) {
-            res.status(401).json({ error: error.message , message: "pasa aca"})
+            console.error("Error al registrar:", error.message);
+            res.status(500).json({ message: error.message });
         }
     }
 

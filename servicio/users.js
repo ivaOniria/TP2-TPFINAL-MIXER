@@ -39,25 +39,35 @@ class Servicio {
     }
 
     login = async (user) => {
-        //const res = validar(user, 'login')
-        // if (res.result) {
-        return await this.#jwtService.login(user);
-        // }
-    }
-
-    register = async (user) => {
-        const existente = await this.#model.buscarPorEmail(user.email);
-        if (existente) {
-            throw new Error('El email ya está registrado');
+        const res = validar(user, 'login');
+        console.log(res, "llega la respuesta")
+        if (!res.result) {
+            const mensaje = res.error.details.map(e => e.message).join(', ');
+            throw new Error(`Error de validación: ${mensaje}`);
         }
 
-        //const res = validar(user, 'register');
-        //if (res.result) {
-        const userCreado = await this.#jwtService.register(user);
-        await sendEmail(user.email);
-        return userCreado;
-        //}
+        return await this.#jwtService.login(user);
+}
+
+    register = async (user) => {
+        
+    const res = validar(user, 'register');
+    if (!res.result) {
+        const mensaje = res.error.message;
+        throw new Error(`Error: ${mensaje}`);
     }
+        
+    const existente = await this.#model.buscarPorEmail(user.email);
+    if (existente) {
+        throw new Error('El email ya está registrado');
+    }
+
+    const userCreado = await this.#jwtService.register(user);
+    await sendEmail(user.email);
+    return userCreado;
+
+    }
+
 
     actualizarUser = async (id, user) => {
         const userActualizado = await this.#model.actualizarUser(id, user)
