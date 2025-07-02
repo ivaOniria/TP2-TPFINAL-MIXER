@@ -8,7 +8,7 @@ class Servicio {
     #model
     #jwtService
     #modelSounds
-    
+
     constructor() {
         this.#model = new usersMongoDB()
         this.#jwtService = new jwtToken()
@@ -47,27 +47,26 @@ class Servicio {
         }
 
         return await this.#jwtService.login(user);
-}
+    }
 
     register = async (user) => {
-        
-    const res = validar(user, 'register');
-    if (!res.result) {
-        const mensaje = res.error.message;
-        throw new Error(`Error: ${mensaje}`);
-    }
-        
-    const existente = await this.#model.buscarPorEmail(user.email);
-    if (existente) {
-        throw new Error('El email ya está registrado');
-    }
 
-    const userCreado = await this.#jwtService.register(user);
-    await sendEmail(user.email);
-    return userCreado;
+        const res = validar(user, 'register');
+        if (!res.result) {
+            const mensaje = res.error.message;
+            throw new Error(`Error: ${mensaje}`);
+        }
+
+        const existente = await this.#model.buscarPorEmail(user.email);
+        if (existente) {
+            throw new Error('El email ya está registrado');
+        }
+
+        const userCreado = await this.#jwtService.register(user);
+        await sendEmail(user.email);
+        return userCreado;
 
     }
-
 
     actualizarUser = async (id, user) => {
         const userActualizado = await this.#model.actualizarUser(id, user)
@@ -78,7 +77,7 @@ class Servicio {
         const userEliminado = await this.#model.borrarUser(id)
         await this.#modelSounds.borrarSonidosDelUsuario(userEliminado._id);
         return userEliminado
-    }    
+    }
 }
 
 export default Servicio

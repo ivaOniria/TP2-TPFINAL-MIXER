@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "dev": "nodemon app.js --ignore /*.json",
-    "populate": "node scripts/populateDB.js"
+    "populate": "node scripts/populateDB.js",
+    "test-api-ext": "mocha test/api-ext.test.js --timeout 1000000"
   },
   "engines": {
     "node": ">=16"
@@ -17,16 +18,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^9.9.0",
+    "axios": "^1.10.0",
     "bcrypt": "^6.0.0",
+    "chai": "^5.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "expo": "^53.0.11",
     "express": "^4.21.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "mocha": "^11.7.1",
     "mongodb": "^6.17.0",
     "mongoose": "^8.15.1",
-    "nodemailer": "^7.0.3"
+    "nodemailer": "^7.0.3",
+    "supertest": "^7.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
