@@ -39,7 +39,6 @@ class Servicio {
     }
 
     register = async (user) => {
-
         const res = validar(user, 'register');
         if (!res.result) {
             const mensaje = res.error.message;
@@ -58,6 +57,12 @@ class Servicio {
     }
 
     actualizarUser = async (id, user) => {
+        const res = validar(user, 'actualizar');
+        if (!res.result) {
+            const mensaje = res.error.message;
+            throw new Error(`Error: ${mensaje}`);
+        }
+
         const userActualizado = await this.#model.actualizarUser(id, user)
         return userActualizado
     }

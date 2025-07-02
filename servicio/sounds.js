@@ -58,16 +58,13 @@ class Servicio {
         return sonidosADevolver;
     };
 
-<<<<<<< HEAD
-guardarSonido = async (sonido) => {
-    const res = validar(sonido, 'POST'); 
-    if (!res.result) {
-        const mensaje = res.error.details.map(e => e.message).join(', ');
-        throw new Error(`Error de validación: ${mensaje}`);
-=======
-    guardarSonido = async sonido => {
-        const res = validar(sonido)
-        if (res.result) {
+    guardarSonido = async (sonido) => {
+        const res = validar(sonido, 'POST');
+        if (!res.result) {
+            const mensaje = res.error.details.map(e => e.message).join(', ');
+            throw new Error(`Error al guardar sonido: ${mensaje}`);
+
+        } else {
             const sonidoGuardado = await this.#model.guardarSonido(sonido)
             if (!sonidoGuardado.user) {
                 throw new Error('El sonido no tiene un usuario válido');
@@ -75,23 +72,15 @@ guardarSonido = async (sonido) => {
 
             await this.#modelUsers.guardarSonidoEnUsuario(sonidoGuardado)
             return sonidoGuardado
-        } else {
-            throw new Error(res.error.details[0].message)
         }
->>>>>>> 53c576bc77e50def77b73ae961c4bbc09db78e50
     }
-
-    const sonidoGuardado = await this.#model.guardarSonido(sonido);
-    if (!sonidoGuardado.user) {
-        throw new Error('El sonido no tiene un usuario válido');
-    }
-
-    await this.#modelUsers.guardarSonidoEnUsuario(sonidoGuardado);
-
-    return sonidoGuardado;
-}
 
     actualizarSonido = async (id, sonido) => {
+        const res = validar(sonido, 'PUT');
+        if (!res.result) {
+            const mensaje = res.error.details.map(e => e.message).join(', ');
+            throw new Error(`Error al modificar sonido: ${mensaje}`);
+        }
         const sonidoActualizado = await this.#model.actualizarSonido(id, sonido)
         return sonidoActualizado
     }

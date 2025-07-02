@@ -33,6 +33,7 @@ class Controlador {
 
     guardarSonido = async (req, res) => {
         try {
+            console.log('body recibido:', req.body);
             const sonido = req.body
             const sonidoGuardado = await this.#servicio.guardarSonido(sonido)           
             res.status(201).json(sonidoGuardado)

@@ -1,32 +1,45 @@
-import Joi from 'joi'
-import { TIPOS_DE_SONIDO_ARRAY } from '../../src/constantes/tiposDeSonido.js'
+import Joi from 'joi';
 
 export const validar = (sonido, method) => {
-    const esPost = method === 'POST'
+  const esPost = method === 'POST';
 
-    const definiciones = {
-        nombre: Joi.string().invalid(null, '').messages({
-            'any.invalid': '"nombre" no puede ser null ni vacío',
-            'string.base': '"nombre" debe ser una cadena de texto'
+  const definiciones = {
+    title: Joi.string().invalid(null, '').messages({
+      'any.invalid': '"title" no puede ser null ni vacío',
+      'string.base': '"title" debe ser una cadena de texto',
+    }),
+    url: Joi.string().uri().invalid(null, '').messages({
+      'any.invalid': '"url" no puede ser null ni vacío',
+      'string.uri': '"url" debe ser una URL válida',
+    }),
+    type: Joi.string().invalid(null, '').messages({
+      'any.invalid': '"type" no puede ser null ni vacío',
+      'string.base': '"type" debe ser una cadena de texto',
+    }),
+    user: Joi.object({
+      _id: Joi.string()
+        .length(24)
+        .hex()
+        .messages({
+          'string.length': '"user._id" debe tener 24 caracteres',
+          'string.hex': '"user._id" debe ser un ObjectId válido',
+          'any.required': '"user._id" es obligatorio',
         }),
-        url: Joi.string().uri().invalid(null, '').messages({
-            'any.invalid': '"url" no puede ser null ni vacío',
-            'string.uri': '"url" debe ser una URL válida'
-        }),
-        tipo: Joi.string().valid(...TIPOS_DE_SONIDO_ARRAY).invalid(null, '').messages({
-            'any.only': `"tipo" debe ser uno de: ${TIPOS_DE_SONIDO_ARRAY.join(', ')}`,
-            'any.invalid': '"tipo" no puede ser null ni vacío'
-        })
+    })
+      .unknown(true)  
+      .messages({
+        'object.base': '"user" debe ser un objeto con campo "_id"',
+        'any.required': '"user" es obligatorio',
+      }),
+  };
+
+  if (esPost) {
+    for (const campo in definiciones) {
+      definiciones[campo] = definiciones[campo].required();
     }
+  }
 
-    if (esPost) {
-        for (const campo in definiciones) {
-            definiciones[campo] = definiciones[campo].required()
-        }
-    }
-
-    const schema = Joi.object(definiciones).min(esPost ? 0 : 1)
-    const { error } = schema.validate(sonido)
-    return error ? { result: false, error } : { result: true }
-}
-
+  const schema = Joi.object(definiciones).min(esPost ? 0 : 1);
+  const { error } = schema.validate(sonido);
+  return error ? { result: false, error } : { result: true };
+};
