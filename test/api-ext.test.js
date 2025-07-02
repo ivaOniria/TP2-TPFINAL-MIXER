@@ -2,7 +2,6 @@ import { expect } from 'chai'
 import supertest from 'supertest'
 import generador from './generador/user.js'
 
-
 const request = supertest('http://localhost:8080')
 
 describe('*** TEST DEL SERVICIO APIRESTful (ext) ***', () => {
@@ -28,7 +27,6 @@ describe('*** TEST DEL SERVICIO APIRESTful (ext) ***', () => {
             const userGuardado = response.body.user;
 
             expect(userGuardado).to.include.keys('_id', 'nombre', 'email');
-
             expect(userGuardado._id).to.be.a('string');
             expect(userGuardado.nombre).to.eql(user.nombre);
             expect(userGuardado.email).to.eql(user.email);
