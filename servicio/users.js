@@ -6,10 +6,12 @@ import soundsMongoDB from '../model/DAO/soundsMongoDB.js'
 class Servicio {
     #model
     #modelSounds
+    #jwtToken
 
     constructor() {
         this.#model = new usersMongoDB()
         this.#modelSounds = new soundsMongoDB()
+        this.#jwtToken = new jwtToken()
     }
 
     obtenerUsers = async id => {
@@ -27,10 +29,10 @@ class Servicio {
         const usuarioEnBD = await this.#model.obtenerUserPorMail(user);
         if (!usuarioEnBD) throw new Error('Email o contraseña incorrectos');
 
-        const passwordOK = await jwtToken.verificarPassword(user.password, usuarioEnBD.password);
+        const passwordOK = await this.#jwtToken.verificarPassword(user.password, usuarioEnBD.password);
         if (!passwordOK) throw new Error('Email o contraseña incorrectos');
 
-        return jwtToken.generarToken(usuarioEnBD);
+        return this.#jwtToken.generarToken(usuarioEnBD);
     }
 
     register = async (user) => {
@@ -43,7 +45,7 @@ class Servicio {
         const existente = await this.#model.buscarPorEmail(user.email);
         if (existente) throw new Error('El email ya está registrado');
 
-        const hashedPassword = await jwtToken.hashearPassword(user.password);
+        const hashedPassword = await this.#jwtToken.hashearPassword(user.password);
 
         const nuevoUsuario = {
             nombre: user.nombre,
@@ -54,7 +56,7 @@ class Servicio {
         const usuarioGuardado = await this.#model.register(nuevoUsuario);
         await sendEmail(user.email);
 
-        return jwtToken.generarToken(usuarioGuardado);
+        return this.#jwtToken.generarToken(usuarioGuardado);
     }
 
     actualizarUser = async (id, user) => {

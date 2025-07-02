@@ -4,18 +4,18 @@ import jwt from 'jsonwebtoken';
 class jwtToken {
 
     // Compara la contraseña con el hash
-    static async verificarPassword(passwordPlano, hash) {
+    async verificarPassword(passwordPlano, hash) {
         return await bcrypt.compare(passwordPlano, hash);
     }
 
     // Genera un hash para una contraseña
-    static async hashearPassword(passwordPlano) {
+    async hashearPassword(passwordPlano) {
         const saltRounds = 10;
         return await bcrypt.hash(passwordPlano, saltRounds);
     }
 
     // Genera un JWT con datos del usuario
-    static generarToken(usuario) {
+    generarToken(usuario) {
         const payload = {
             id: usuario._id,
             email: usuario.email
