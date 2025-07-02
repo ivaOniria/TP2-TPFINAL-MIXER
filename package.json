@@ -9,7 +9,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js --ignore /*.json",
     "populate": "node scripts/populateDB.js",
-    "test-api-ext": "mocha test/api-ext.test.js --timeout 1000000"
+    "test-api-ext": "mocha test/api-ext.test.js --timeout 100000"
   },
   "engines": {
     "node": ">=16"

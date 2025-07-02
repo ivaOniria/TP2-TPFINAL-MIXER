@@ -42,7 +42,7 @@ class Servicio {
                 userId: s.user._id
             })));
         }
-        
+
         if (userId !== idUserGeneral) {
 
             const sonidosBase = await this.#model.obtenerSonidos(idUserGeneral);
@@ -59,19 +59,18 @@ class Servicio {
     };
 
     guardarSonido = async sonido => {
-        /*         const res = validar(sonido)
-                if (res.result) { */
-        const sonidoGuardado = await this.#model.guardarSonido(sonido)
-        if (!sonidoGuardado.user) {
-            throw new Error('El sonido no tiene un usuario válido');
-        }
+        const res = validar(sonido)
+        if (res.result) {
+            const sonidoGuardado = await this.#model.guardarSonido(sonido)
+            if (!sonidoGuardado.user) {
+                throw new Error('El sonido no tiene un usuario válido');
+            }
 
-        await this.#modelUsers.guardarSonidoEnUsuario(sonidoGuardado)
-        return sonidoGuardado
-        /*         }
-                else {
-                    throw new Error(res.error.details[0].message)
-                } */
+            await this.#modelUsers.guardarSonidoEnUsuario(sonidoGuardado)
+            return sonidoGuardado
+        } else {
+            throw new Error(res.error.details[0].message)
+        }
     }
 
     actualizarSonido = async (id, sonido) => {
@@ -88,14 +87,14 @@ class Servicio {
     renderizarSonidos = async (eventsData) => {
         console.log('🎬 Iniciando renderizado de sesión...');
         console.log('Datos recibidos:', JSON.stringify(eventsData, null, 2));
-        
+
         try {
             // Usar la utilidad FFmpeg para renderizar
             const result = await this.#ffmpegRenderer.render(eventsData);
-            
+
             // Extraer solo el nombre del archivo
             const filename = path.basename(result.outputFile);
-            
+
             console.log('✅ Renderizado completado exitosamente');
             return {
                 success: true,
@@ -104,7 +103,7 @@ class Servicio {
                 filename: filename,
                 result
             };
-            
+
         } catch (error) {
             console.error('❌ Error renderizando sesión:', error);
             throw new Error(`Error en renderizado: ${error.message}`);
@@ -113,18 +112,18 @@ class Servicio {
 
     obtenerRutaArchivo = async (filename) => {
         const filePath = path.resolve('./rendered_audio', filename);
-        
+
         // Verificar que el archivo existe
         if (!fs.existsSync(filePath)) {
             throw new Error(`Archivo no encontrado: ${filename}`);
         }
-        
+
         // Verificar que está en la carpeta correcta (seguridad)
         const resolvedDir = path.resolve('./rendered_audio');
         if (!filePath.startsWith(resolvedDir)) {
             throw new Error('Acceso no autorizado al archivo');
         }
-        
+
         return filePath;
     }
 }

@@ -27,17 +27,6 @@ class Servicio {
         }
     }
 
-    guardarUser = async user => {
-        const res = validar(user)
-        if (res.result) {
-            const userGuardado = await this.#model.guardarUser(user)
-            return userGuardado
-        }
-        else {
-            throw new Error(res.error.details[0].message)
-        }
-    }
-
     login = async (user) => {
         const res = validar(user, 'login');
         console.log(res, "llega la respuesta")

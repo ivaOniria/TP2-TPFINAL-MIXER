@@ -40,19 +40,6 @@ class Controlador {
         }
     };
 
-    guardarUser = async (req, res) => {
-        try {
-            const usuario = req.body
-            // if (!Object.keys(usuario).length) throw new Error('El usuario está vacío')
-
-            const usuarioGuardado = await this.#servicio.guardarUser(usuario)
-            res.json(usuarioGuardado)
-        }
-        catch (error) {
-            res.status(500).json({ error: error.message })
-        }
-    }
-
     actualizarUser = async (req, res) => {
         try {
             const { id } = req.params
