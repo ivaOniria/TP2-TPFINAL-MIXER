@@ -58,21 +58,22 @@ class Servicio {
         return sonidosADevolver;
     };
 
-    guardarSonido = async sonido => {
-        /*         const res = validar(sonido)
-                if (res.result) { */
-        const sonidoGuardado = await this.#model.guardarSonido(sonido)
-        if (!sonidoGuardado.user) {
-            throw new Error('El sonido no tiene un usuario válido');
-        }
-
-        await this.#modelUsers.guardarSonidoEnUsuario(sonidoGuardado)
-        return sonidoGuardado
-        /*         }
-                else {
-                    throw new Error(res.error.details[0].message)
-                } */
+guardarSonido = async (sonido) => {
+    const res = validar(sonido, 'POST'); 
+    if (!res.result) {
+        const mensaje = res.error.details.map(e => e.message).join(', ');
+        throw new Error(`Error de validación: ${mensaje}`);
     }
+
+    const sonidoGuardado = await this.#model.guardarSonido(sonido);
+    if (!sonidoGuardado.user) {
+        throw new Error('El sonido no tiene un usuario válido');
+    }
+
+    await this.#modelUsers.guardarSonidoEnUsuario(sonidoGuardado);
+
+    return sonidoGuardado;
+}
 
     actualizarSonido = async (id, sonido) => {
         const sonidoActualizado = await this.#model.actualizarSonido(id, sonido)

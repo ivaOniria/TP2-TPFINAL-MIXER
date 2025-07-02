@@ -34,13 +34,11 @@ class Controlador {
     guardarSonido = async (req, res) => {
         try {
             const sonido = req.body
-            // if (!Object.keys(sonido).length) throw new Error('El sonido está vacío')
-
             const sonidoGuardado = await this.#servicio.guardarSonido(sonido)           
-            res.json(sonidoGuardado)
+            res.status(201).json(sonidoGuardado)
         }
         catch (error) {
-            res.status(500).json({ error: error.message })
+            res.status(400).json({ error: error.message })
         }
     }
 
