@@ -1,7 +1,4 @@
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-
-dotenv.config(); // Chequear si es necesario
 
 const transporter = nodemailer.createTransport({
   host: "smtp-mail.outlook.com",
