@@ -35,19 +35,32 @@ export const validar = (usuario, metodo) => {
 
     let camposRequeridos = [];
 
+    let esquema;
+
     if (metodo === 'register') {
         camposRequeridos = ['nombre', 'email', 'password'];
+        esquema = Joi.object(
+            Object.fromEntries(
+                camposRequeridos.map((campo) => [campo, definiciones[campo].required()])
+            )
+        );
     } else if (metodo === 'login') {
         camposRequeridos = ['email', 'password'];
+        esquema = Joi.object(
+            Object.fromEntries(
+                camposRequeridos.map((campo) => [campo, definiciones[campo].required()])
+            )
+        );
+    } else if (metodo === 'actualizar') {
+        // Para actualizar, todos los campos son opcionales pero mantienen sus validaciones de formato
+        esquema = Joi.object({
+            nombre: definiciones.nombre.optional(),
+            email: definiciones.email.optional(),
+            password: definiciones.password.optional()
+        });
     } else {
         return { result: false, error: { message: 'Método no válido' } };
     }
-
-    const esquema = Joi.object(
-        Object.fromEntries(
-            camposRequeridos.map((campo) => [campo, definiciones[campo].required()])
-        )
-    );
 
     const { error } = esquema.validate(usuario, { abortEarly: false });
     return error ? { result: false, error } : { result: true };

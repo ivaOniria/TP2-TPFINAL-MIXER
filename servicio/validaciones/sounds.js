@@ -1,45 +1,36 @@
-import Joi from 'joi';
+import Joi from 'joi'
+import { TIPOS_DE_SONIDO_ARRAY } from '../../src/constantes/tiposDeSonido.js'
 
 export const validar = (sonido, method) => {
-  const esPost = method === 'POST';
+    const esPost = method === 'POST'
 
-  const definiciones = {
-    title: Joi.string().invalid(null, '').messages({
-      'any.invalid': '"title" no puede ser null ni vacío',
-      'string.base': '"title" debe ser una cadena de texto',
-    }),
-    url: Joi.string().uri().invalid(null, '').messages({
-      'any.invalid': '"url" no puede ser null ni vacío',
-      'string.uri': '"url" debe ser una URL válida',
-    }),
-    type: Joi.string().invalid(null, '').messages({
-      'any.invalid': '"type" no puede ser null ni vacío',
-      'string.base': '"type" debe ser una cadena de texto',
-    }),
-    user: Joi.object({
-      _id: Joi.string()
-        .length(24)
-        .hex()
-        .messages({
-          'string.length': '"user._id" debe tener 24 caracteres',
-          'string.hex': '"user._id" debe ser un ObjectId válido',
-          'any.required': '"user._id" es obligatorio',
+    const definiciones = {
+        title: Joi.string().invalid(null, '').messages({
+            'any.invalid': '"title" no puede ser null ni vacío',
+            'string.base': '"title" debe ser una cadena de texto'
         }),
-    })
-      .unknown(true)  
-      .messages({
-        'object.base': '"user" debe ser un objeto con campo "_id"',
-        'any.required': '"user" es obligatorio',
-      }),
-  };
-
-  if (esPost) {
-    for (const campo in definiciones) {
-      definiciones[campo] = definiciones[campo].required();
+        url: Joi.string().uri().invalid(null, '').messages({
+            'any.invalid': '"url" no puede ser null ni vacío',
+            'string.uri': '"url" debe ser una URL válida'
+        }),
+        type: Joi.string().valid(...TIPOS_DE_SONIDO_ARRAY).invalid(null, '').messages({
+            'any.only': `"type" debe ser uno de: ${TIPOS_DE_SONIDO_ARRAY.join(', ')}`,
+            'any.invalid': '"type" no puede ser null ni vacío'
+        }),
+        user: Joi.string().pattern(/^[0-9a-fA-F]{24}$/).invalid(null, '').messages({
+            'any.invalid': '"user" no puede ser null ni vacío',
+            'string.pattern.base': '"user" debe ser un ObjectId válido de MongoDB (24 caracteres hexadecimales)'
+        })
     }
-  }
 
-  const schema = Joi.object(definiciones).min(esPost ? 0 : 1);
-  const { error } = schema.validate(sonido);
-  return error ? { result: false, error } : { result: true };
-};
+    if (esPost) {
+        for (const campo in definiciones) {
+            definiciones[campo] = definiciones[campo].required()
+        }
+    }
+
+    const schema = Joi.object(definiciones).min(esPost ? 0 : 1)
+    const { error } = schema.validate(sonido)
+    return error ? { result: false, error } : { result: true }
+}
+
